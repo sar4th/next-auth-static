@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "jsx": "react",
-    "target": "ESNext",
-    "module": "commonjs",
+    "target": "ES6",
+    "module": "ESNext",
     "lib": ["dom", "esnext"],
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
