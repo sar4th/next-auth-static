@@ -1,26 +1,21 @@
 export interface AuthUser {
-  id: string;
-  [key: string]: any;
+  id?: string;
+  [key: string | number]: any;
 }
-
-export interface AuthTokens {
+export interface UserSessionInfo {
   accessToken: string;
-  refreshToken: string;
-  tokenType: string;
+  user?: any;
 }
 
 export interface AuthConfig {
-  tokenKeys: {
+  accessToken?: string;
+  tokenType: "Bearer" | "Basic" | "JWT" | "OAuth";
+  tokenExpiry?: number;
+  tokenKeys?: {
     accessToken: string;
-    refreshToken: string;
-    tokenType: string;
   };
-  refreshTokenFn?: (refreshToken: string) => Promise<AuthTokens>;
-  loginRedirectUrl?: string;
-  logoutRedirectUrl?: string;
-  unauthorizedRedirectUrl?: string;
-  tokenExpirationBuffer?: number;
 }
+
 export class AuthError extends Error {
   constructor(message: string) {
     super(message);
@@ -30,6 +25,5 @@ export class AuthError extends Error {
 
 export interface DecodedToken {
   exp: number;
-  user: AuthUser;
   [key: string]: any;
 }
