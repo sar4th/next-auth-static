@@ -8,7 +8,6 @@ export interface UserSessionInfo {
 }
 
 export interface AuthConfig {
-  accessToken?: string;
   tokenType: "Bearer" | "Basic" | "JWT" | "OAuth";
   tokenExpiry?: number;
   tokenKeys?: {
