@@ -1,6 +1,6 @@
 {
   "name": "next-auth-static",
-  "version": "1.0.0",
+  "version": "1.0.8",
   "type": "module",
   "description": "next js authentication solution for static sites",
   "main": "dist/index.js",
