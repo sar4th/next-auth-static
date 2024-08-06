@@ -11,9 +11,8 @@ Next.js Static Auth is a comprehensive TypeScript library for managing authentic
 
 ## Installation
 
-```
-npm install next auth static
-```
+```bash
+npm install next-auth-static
 
 
 ## Usage
