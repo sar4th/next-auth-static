@@ -4,7 +4,7 @@ Next.js Static Auth is a comprehensive TypeScript library for managing authentic
 - can be used on the client side, anywhere
 ## Features
 
-- **User Authentication**: Implement secure user registration, login, and logout functionality.
+- **User Authentication**: Implement secure user sign-in and sign-out functionality.
 - **Token Management**: Securely handle JWT tokens for authentication.
 - **Session Handling**: Manage user sessions
 - **Static Site Integration**: Seamlessly works with Next.js static site generation.
