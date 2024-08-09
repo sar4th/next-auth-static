@@ -37,8 +37,29 @@ export const setSessionInCookie = (
   config: AuthConfig
 ) => {
   try {
-    const expiryDate = new Date();
-    expiryDate.setHours(expiryDate.getHours() + 1);
+    const now = new Date();
+    let expiryDate = new Date(now.getTime());
+    const tokenExpiry = config.tokenExpiry ?? 1;
+    switch (config.tokenExpiryUnit) {
+      case "seconds":
+        expiryDate = new Date(now.getTime() + tokenExpiry * 1000);
+        break;
+      case "minutes":
+        expiryDate = new Date(now.getTime() + tokenExpiry * 60 * 1000);
+        break;
+      case "hours":
+        expiryDate = new Date(now.getTime() + tokenExpiry * 60 * 60 * 1000);
+        break;
+      case "days":
+        expiryDate = new Date(
+          now.getTime() + tokenExpiry * 24 * 60 * 60 * 1000
+        );
+        break;
+      default:
+        throw new Error("Invalid token expiry unit");
+    }
+
+    console.log(`Expiration Date: ${expiryDate.toISOString()}`);
 
     if (config.tokenKeys?.accessToken) {
       setCookie(
