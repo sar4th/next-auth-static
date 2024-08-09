@@ -1,10 +1,13 @@
 {
   "name": "next-auth-static",
-  "version": "1.0.12",
+  "version": "1.0.15",
   "type": "module",
   "description": "next js authentication solution for static sites",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/sar4th/next-auth-static"
+  },
   "scripts": {
     "build": "npx rollup -c"
   },

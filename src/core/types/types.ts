@@ -9,6 +9,7 @@ export interface UserSessionInfo {
 
 export interface AuthConfig {
   tokenType: "Bearer" | "Basic" | "JWT" | "OAuth";
+  tokenExpiryUnit?: "seconds" | "minutes" | "hours" | "days";
   tokenExpiry?: number;
   tokenKeys?: {
     accessToken: string;
