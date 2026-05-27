@@ -1,13 +1,15 @@
 # Next Auth Static
-Next.js Static Auth is a comprehensive TypeScript library for managing authentication and authorization in Next.js static exported projects
+Next Auth Static is a lightweight TypeScript session toolkit for statically exported Next.js apps.
 
-- can be used on the client side, anywhere
+It provides client-side session state and route gating helpers. It does not provide server-side security guarantees, because static pages and assets are still delivered to the browser.
+
 ## Features
 
-- **User Authentication**: Implement secure user sign-in and sign-out functionality.
-- **Token Management**: Securely handle JWT tokens for authentication.
-- **Session Handling**: Manage user sessions
-- **Static Site Integration**: Seamlessly works with Next.js static site generation.
+- **Reactive Session State**: `signIn` and `signOut` update React consumers immediately.
+- **Token Storage**: Store a client-side access token in cookies.
+- **JWT Expiry Handling**: Decode the JWT `exp` claim and clear expired sessions.
+- **Route Gating**: Use `RequireAuth` for protected client-side routes.
+- **Static Site Integration**: Works with statically exported Next.js apps.
 
 ## Installation
 
@@ -18,7 +20,7 @@ npm install next-auth-static
 
 ## Usage
 
-In layout.tsx
+In `layout.tsx`, install the provider. The provider only owns session state; it does not redirect by itself.
 
 ```js
 "use client";
@@ -34,16 +36,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-      const authConfig: AuthConfig = {
+  const authConfig: AuthConfig = {
     tokenType: "Bearer",
+    tokenExpiryUnit: "hours",
+    tokenExpiry: 1,
     tokenKeys: {
       accessToken: "access_token",
     },
   };
+
   return (
     <html lang="en">
       <body className={inter.className}>
-      <AuthProvider config={authConfig}>{children}</AuthProvider>;
+        <AuthProvider config={authConfig}>{children}</AuthProvider>
       </body>
     </html>
   );
@@ -51,7 +56,22 @@ export default function RootLayout({
 
 ```
 
-user sign in:
+Gate protected pages with `RequireAuth`:
+
+```js
+"use client";
+import { RequireAuth } from "next-auth-static";
+
+export default function DashboardPage() {
+  return (
+    <RequireAuth fallback={<p>Loading...</p>}>
+      <main>Private dashboard</main>
+    </RequireAuth>
+  );
+}
+```
+
+User sign in:
 
 ```js
 "use client";
@@ -126,7 +146,7 @@ signout:
 get current sessions:
 
 ```js
-  const {currentSession } = useAuth();
+  const {currentSession, isAuthenticated, isLoading, isReady } = useAuth();
 
     const { user = {} } = currentSession || {};
      if (user) {
@@ -154,9 +174,25 @@ Signs in a user.
 
 Signs out the current user.
 
-#### currentSession: { user?: User } | null
+#### currentSession: { accessToken: string; user?: User } | null
 
 The current user session, if any.
+
+#### isAuthenticated: boolean
+
+Whether a non-expired session is currently loaded.
+
+#### isLoading: boolean
+
+Whether the provider is still reading the initial session from cookies.
+
+#### isReady: boolean
+
+Whether initial session loading is complete.
+
+### Security note
+
+This library is for client-side session ergonomics in static apps. It can hide UI and redirect after hydration, but it cannot protect static files or prove token validity by itself. Validate access tokens on the API or backend that serves protected data.
 ## License
 
 MIT

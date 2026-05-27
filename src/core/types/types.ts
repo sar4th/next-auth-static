@@ -1,19 +1,26 @@
-export interface AuthUser {
+export type AuthUser = Record<string, unknown> & {
   id?: string;
-  [key: string | number]: any;
-}
-export interface UserSessionInfo {
+};
+
+export interface UserSessionInfo<TUser extends AuthUser = AuthUser> {
   accessToken: string;
-  user?: any;
+  user?: TUser;
+}
+
+export type AuthSession<TUser extends AuthUser = AuthUser> =
+  UserSessionInfo<TUser>;
+
+export interface AuthTokenKeys {
+  accessToken: string;
+  user: string;
+  tokenType: string;
 }
 
 export interface AuthConfig {
   tokenType: "Bearer" | "Basic" | "JWT" | "OAuth";
   tokenExpiryUnit?: "seconds" | "minutes" | "hours" | "days";
   tokenExpiry?: number;
-  tokenKeys?: {
-    accessToken: string;
-  };
+  tokenKeys?: Partial<AuthTokenKeys>;
 }
 
 export class AuthError extends Error {
@@ -24,6 +31,6 @@ export class AuthError extends Error {
 }
 
 export interface DecodedToken {
-  exp: number;
-  [key: string]: any;
+  exp?: number;
+  [key: string]: unknown;
 }

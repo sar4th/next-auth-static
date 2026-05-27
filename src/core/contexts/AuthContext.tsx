@@ -1,14 +1,13 @@
-import React, { createContext, useContext, useEffect, ReactNode } from "react";
-import { useRouter } from "next/navigation";
-import useAuthService from "../hooks/useAuthService";
-import { AuthConfig, UserSessionInfo } from "../types/types";
+import React, { createContext, ReactNode, useContext, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import useAuthService, {
+  UseAuthServiceReturn,
+} from "../hooks/useAuthService";
+import { AuthConfig, AuthUser } from "../types/types";
 
-interface AuthContextType {
-  signIn: (sessionInfo: UserSessionInfo) => Promise<void>;
-  signOut: () => Promise<void>;
-  isAuthenticated: () => boolean;
-  currentSession: UserSessionInfo | null;
-}
+type AuthContextType<TUser extends AuthUser = AuthUser> =
+  UseAuthServiceReturn<TUser>;
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
@@ -18,21 +17,44 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children, config }: AuthProviderProps) {
   const auth = useAuthService(config);
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!auth.isAuthenticated()) {
-      router.push("/login");
-    }
-  }, [auth, router]);
 
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
 }
 
-export function useAuth(): AuthContextType {
+export interface RequireAuthProps {
+  children: ReactNode;
+  loginPath?: string;
+  fallback?: ReactNode;
+}
+
+export function RequireAuth({
+  children,
+  loginPath = "/login",
+  fallback = null,
+}: RequireAuthProps) {
+  const auth = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (auth.isReady && !auth.isAuthenticated && pathname !== loginPath) {
+      router.push(loginPath);
+    }
+  }, [auth.isAuthenticated, auth.isReady, loginPath, pathname, router]);
+
+  if (auth.isLoading || !auth.isAuthenticated) {
+    return <>{fallback}</>;
+  }
+
+  return <>{children}</>;
+}
+
+export function useAuth<TUser extends AuthUser = AuthUser>(): AuthContextType<TUser> {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-  return context;
+
+  return context as AuthContextType<TUser>;
 }

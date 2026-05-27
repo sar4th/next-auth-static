@@ -9,7 +9,7 @@ export default {
       format: "es",
     },
   ],
-  external: ["react", "react-dom", "next", "jwt-decode"],
+  external: ["react", "react-dom", "next", "next/navigation", "jwt-decode"],
   plugins: [
     typescript(),
     babel({ babelHelpers: "bundled", extensions: [".ts", ".tsx"] }),
